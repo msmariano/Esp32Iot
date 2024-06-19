@@ -6,10 +6,10 @@
 #include <WiFiUdp.h>
 #include <Espalexa.h>
 
-char ssid[] = "Marianos_B";
+char ssid[] = "mariano";
 char pass[] = "20061977";
-String uuid = "9b8068f7-ba15-43cd-a993-2671b1c60aac";
-String nick = "LuzFundos";
+String uuid = "32313e41-5d30-421f-929e-75d18e258b8d";
+String nick = "Portão Matinhos";
 const char broker[] = "f897f821.ala.us-east-1.emqxsl.com";
 String usuarioBroker = "neuverse";
 String senhaBroker = "M@r040370";
@@ -29,11 +29,11 @@ Espalexa espalexa;
 
 int port = 8883;
 DynamicJsonDocument buttonIOTs(2048);
-int rele = D3;
+int rele = D7;
 int ledVerde = D6;
 int ledAmarelo = D5;
 int ledVermelho = D4;
-int interruptor = D7;
+int interruptor = D3;
 bool statusLedVm = LOW;
 int estado = LOW;
 bool mqttConected = false;
