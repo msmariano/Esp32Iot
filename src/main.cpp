@@ -6,10 +6,10 @@
 #include <WiFiUdp.h>
 #include <Espalexa.h>
 
-char ssid[] = "mariano";
-char pass[] = "20061977";
-String uuid = "32313e41-5d30-421f-929e-75d18e258b8d";
-String nick = "Portão Matinhos";
+char ssid[] = "Escritorio";
+char pass[] = "80818283";
+String uuid = "6efe504b-8b45-43f8-bffe-177417c07f7a";
+String nick = "Portão Prado Velho";
 const char broker[] = "f897f821.ala.us-east-1.emqxsl.com";
 String usuarioBroker = "neuverse";
 String senhaBroker = "M@r040370";
@@ -179,13 +179,13 @@ void setup()
     mqttConected = true;
    }
 
-  buttonIOTs[0]["nick"] = "Matinhos";
+  buttonIOTs[0]["nick"] = "Prado Velho";
   buttonIOTs[0]["id"] = uuid;
   buttonIOTs[0]["dispositivos"][0]["id"] = 1;
   buttonIOTs[0]["dispositivos"][0]["status"] = "OFF";
   buttonIOTs[0]["dispositivos"][0]["idPool"] = uuid;
   buttonIOTs[0]["dispositivos"][0]["nivelAcionamento"] = "HIGH";
-  buttonIOTs[0]["dispositivos"][0]["nick"] = "Luz fundos";
+  buttonIOTs[0]["dispositivos"][0]["nick"] = "Portão Prado Velho";
   buttonIOTs[0]["dispositivos"][0][""] = "";
   buttonIOTs[0]["dispositivos"][0]["genero"] = "INTERRUPTOR";
 
@@ -241,7 +241,7 @@ void loop()
           Serial.println();
           mqttClient.onMessage(onMqttMessage);
           mqttClient.subscribeQoS();
-          mqttClient.subscribe("br/com/neuverse/geral/info");
+          //mqttClient.subscribe("br/com/neuverse/geral/info");
           mqttClient.subscribe("br/com/neuverse/servidores/" + String(uuid) + "/#");
           digitalWrite(ledAmarelo, HIGH);
           mqttConected = true;
@@ -274,11 +274,13 @@ void onMqttMessage(int messageSize)
   String msg = mqttClient.readString();
   Serial.println(mqttClient.messageTopic());
   Serial.println(msg);
-  if (topico.equals("br/com/neuverse/geral/info"))
+  if (topico.equals("br/com/neuverse/servidores/" + String(uuid) + "/info"))
   {
+    DynamicJsonDocument doc(2048);
+    deserializeJson(doc, msg);
     String json = "";
     serializeJson(buttonIOTs, json);
-    mqttClient.beginMessage("br/com/neuverse/geral/lista");
+    mqttClient.beginMessage("br/com/neuverse/clientes/" + String(doc["uuid"]) + "/infoServidor");
     mqttClient.print(json);
     mqttClient.endMessage();
   }
