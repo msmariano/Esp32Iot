@@ -6,10 +6,10 @@
 #include <WiFiUdp.h>
 #include <Espalexa.h>
 
-char ssid[] = "Escritorio";
-char pass[] = "80818283";
-String uuid = "6efe504b-8b45-43f8-bffe-177417c07f7a";
-String nick = "Portão Prado Velho";
+char ssid[] = "mariano";
+char pass[] = "20061977";
+String uuid = "32313e41-5d30-421f-929e-75d18e258b8d";
+String nick = "Portão Matinhos";
 const char broker[] = "f897f821.ala.us-east-1.emqxsl.com";
 String usuarioBroker = "neuverse";
 String senhaBroker = "M@r040370";
@@ -48,12 +48,12 @@ void IRAM_ATTR isr()
     int status = digitalRead(rele);
     if (status == 1)
     {
-      digitalWrite(rele, LOW);
+      //digitalWrite(rele, LOW);
       digitalWrite(ledVerde, LOW);
     }
     else
     {
-      digitalWrite(rele, HIGH);
+      //digitalWrite(rele, HIGH);
       digitalWrite(ledVerde, HIGH);
     }
     temEvento = true;
@@ -67,11 +67,11 @@ void acionar(uint8_t brightness){
   Serial.println("Evento Alexa ");
   if (brightness == 255)
   {
-    digitalWrite(rele, HIGH);
+    //digitalWrite(rele, HIGH);
   }
   else
   {
-    digitalWrite(rele, LOW);  
+    //digitalWrite(rele, LOW);  
   }
   String json = "";
   serializeJson(buttonIOTs, json);    
@@ -89,12 +89,12 @@ void IRAM_ATTR funcaoInterrupcao(){
     if( buttonIOTs[0]["dispositivos"][0]["status"] == "OFF"){
       buttonIOTs[0]["dispositivos"][0]["status"] = "ON";
       digitalWrite(ledVerde, HIGH);
-      digitalWrite(rele, HIGH);
+      //digitalWrite(rele, HIGH);
     }
     else{
       buttonIOTs[0]["dispositivos"][0]["status"] = "OFF";
       digitalWrite(ledVerde, LOW);
-      digitalWrite(rele, LOW);
+      //digitalWrite(rele, LOW);
     }
     String json = "";
     serializeJson(buttonIOTs, json);
@@ -111,24 +111,37 @@ void IRAM_ATTR funcaoInterrupcao(){
 
 void setup()
 {
-
+pinMode(rele, OUTPUT);
   Serial.begin(115200);
   /*while (!Serial)
   {
   }*/
 
+  delay(2000);
+ 
+  estado = digitalRead(D7);
+
+  if(estado == 1){
+    digitalWrite(D4, HIGH);
+    Serial.println("Rele ativado no boot"); 
+  }
+  else{
+    digitalWrite(D4, LOW);
+    Serial.println("Rele desativado no boot");
+  } 
+
   pinMode(ledVerde, OUTPUT);
   digitalWrite(ledVerde, LOW);
-  pinMode(rele, OUTPUT);
-  digitalWrite(rele, LOW);
+  
+  //digitalWrite(rele, LOW);
   pinMode(ledAmarelo, OUTPUT);
   digitalWrite(ledAmarelo, LOW);
   pinMode(ledVermelho, OUTPUT);
   digitalWrite(ledVermelho, LOW);
   pinMode(interruptor, INPUT);
-  estado = digitalRead(D7);
+ 
 
-  attachInterrupt(interruptor,isr,CHANGE);
+  //attachInterrupt(interruptor,isr,CHANGE);
 
   //attachInterrupt(digitalPinToInterrupt(interruptor),funcaoInterrupcao,CHANGE);
 
@@ -179,13 +192,13 @@ void setup()
     mqttConected = true;
    }
 
-  buttonIOTs[0]["nick"] = "Prado Velho";
+  buttonIOTs[0]["nick"] = "Matinhos";
   buttonIOTs[0]["id"] = uuid;
   buttonIOTs[0]["dispositivos"][0]["id"] = 1;
   buttonIOTs[0]["dispositivos"][0]["status"] = "OFF";
   buttonIOTs[0]["dispositivos"][0]["idPool"] = uuid;
   buttonIOTs[0]["dispositivos"][0]["nivelAcionamento"] = "HIGH";
-  buttonIOTs[0]["dispositivos"][0]["nick"] = "Portão Prado Velho";
+  buttonIOTs[0]["dispositivos"][0]["nick"] = "Portão Matinhos";
   buttonIOTs[0]["dispositivos"][0][""] = "";
   buttonIOTs[0]["dispositivos"][0]["genero"] = "INTERRUPTOR";
 
@@ -297,14 +310,14 @@ void onMqttMessage(int messageSize)
           //estado = true;
           buttonIOTs[i]["dispositivos"][j]["status"] = "ON";
           digitalWrite(ledVerde, HIGH);
-          digitalWrite(rele, HIGH);
+          //digitalWrite(rele, HIGH);
         }
         else if (doc[i]["dispositivos"][j]["status"] == "OFF")
         {
           //estado = false;
           buttonIOTs[i]["dispositivos"][j]["status"] = "OFF";
           digitalWrite(ledVerde, LOW);
-          digitalWrite(rele, LOW);
+          //digitalWrite(rele, LOW);
         }
         else if (doc[i]["dispositivos"][j]["status"] == "PUSHON"){
           digitalWrite(rele, HIGH);
